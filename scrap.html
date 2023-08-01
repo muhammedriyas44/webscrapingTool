@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Scraping Tool</title>
+    <!-- Add Bootstrap CSS link -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      /* Custom CSS for the header */
+      .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .logo span {
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="header">
+        <div class="logo">AMR <span>community</span></div>
+        <h1 class="mb-4">Web Scraping Tool</h1>
+      </div>
+      <div class="form-group">
+        <label for="websitesInput">Paste the list of websites here:</label>
+        <textarea
+          id="websitesInput"
+          class="form-control"
+          rows="6"
+          placeholder="https://example.com
+https://example2.com"
+        ></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="scrapeAndConvert()">
+        Scrape and Convert
+      </button>
+
+      <!-- Add a container to display the scraped data -->
+      <div id="scrapedData" class="mt-5"></div>
+
+      <!-- Add the download button -->
+      <button class="btn btn-success mt-3" onclick="downloadExcel()">
+        Download Excel
+      </button>
+
+      <!-- Add the message box -->
+      <div
+        class="alert alert-danger mt-3"
+        id="messageBox"
+        style="display: none"
+      ></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+      const corsAnywhereURL = "https://cors-anywhere.herokuapp.com/";
+      let scrapedData = [];
+
+      async function scrapeAndConvert() {
+        try {
+          // Get the list of websites from the input box
+          const websitesInput = document.getElementById("websitesInput");
+          const websitesList = websitesInput.value.split("\n");
+
+          // Scrape data from each website in the list
+          scrapedData = [];
+          for (const website of websitesList) {
+            const response = await axios.get(corsAnywhereURL + website);
+
+            // Use Puppeteer-like scraping here to extract data from the webpage
+            const pageContent = response.data;
+
+            // Replace this with your scraping logic
+            const name = "Scraped Name"; // Replace with the appropriate data extraction logic
+            const phone = "Scraped Phone"; // Replace with the appropriate data extraction logic
+            const email = "Scraped Email"; // Replace with the appropriate data extraction logic
+
+            if (name || phone || email) {
+              scrapedData.push({ website, name, phone, email });
+            }
+          }
+
+          // Display the scraped data on the web page
+          const scrapedDataContainer = document.getElementById("scrapedData");
+          scrapedDataContainer.innerHTML = JSON.stringify(scrapedData, null, 2);
+
+          // Hide the message box if there are no errors
+          document.getElementById("messageBox").style.display = "none";
+
+          console.log("Scraping successful!");
+        } catch (error) {
+          console.error("Error occurred during scraping:", error);
+          // Display the error message in the message box
+          document.getElementById(
+            "messageBox"
+          ).innerHTML = `Error occurred: ${error.message}`;
+          document.getElementById("messageBox").style.display = "block";
+        }
+      }
+
+      // Function to handle the Excel download
+      function downloadExcel() {
+        if (scrapedData.length === 0) {
+          console.warn("No data to download. Please scrape data first.");
+          return;
+        }
+
+        // Convert the data to an Excel file
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(scrapedData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Scraped Data");
+        const excelBuffer = XLSX.write(workbook, { type: "array" });
+
+        // Create a Blob and download the Excel file
+        const blob = new Blob([excelBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "scraped_data.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    </script>
+  </body>
+</html>
