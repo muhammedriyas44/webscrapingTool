@@ -1,7 +1,7 @@
 # webscrapingTool
 This for educational purpose only....
 
-Web scraping tools are software programs or libraries used to extract data from websites. They enable users to automate the process of gathering information from multiple web pages quickly and efficiently. Web scraping is a powerful technique employed by developers, data analysts, researchers, and businesses to collect valuable data from the internet for various purposes, such as data analysis, market research, lead generation, and competitive intelligence.
+Web scraping tools used to extract data from websites. They enable users to automate the process of gathering information from multiple web pages quickly and efficiently. Web scraping is a powerful technique employed by developers, data analysts, researchers, and businesses to collect valuable data from the internet for various purposes, such as data analysis, market research, lead generation, and competitive intelligence.
 
 Data Export: 
 Once the web scraping tool extracts the information from websites, it often provides options for data export in various formats. One common format is Excel, which is widely used for data storage and analysis. With data exported to Excel, users can further manipulate, analyze, and visualize the data using spreadsheet software like Microsoft Excel .
